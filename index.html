@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+    content="PRISM learns a behavior latent space with a contrastive VAE and controls the behavior distribution at rollout, so an AI agent trains with both common and uncommon human behaviors.">
+  <meta name="keywords" content="Human-AI Collaboration, Human Behavior Model, Contrastive Learning, Diffusion Policy">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learning Controllable Human Behavior Models for Human-AI Collaboration</title>
+
+  <!-- Link previews. Update these if the page is ever served from another URL. -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Learning Controllable Human Behavior Models for Human-AI Collaboration">
+  <meta property="og:description"
+    content="PRISM learns a behavior latent space with a contrastive VAE and controls the behavior distribution at rollout, so an AI agent trains with both common and uncommon human behaviors.">
+  <meta property="og:url" content="https://live-robotics-uva.github.io/prism_controllable_human_behaviors/">
+  <meta property="og:image"
+    content="https://live-robotics-uva.github.io/prism_controllable_human_behaviors/static/images/intro.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Learning Controllable Human Behavior Models for Human-AI Collaboration">
+  <meta name="twitter:description"
+    content="PRISM learns a behavior latent space with a contrastive VAE and controls the behavior distribution at rollout, so an AI agent trains with both common and uncommon human behaviors.">
+  <meta name="twitter:image"
+    content="https://live-robotics-uva.github.io/prism_controllable_human_behaviors/static/images/intro.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/custom.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Learning Controllable Human Behavior Models for Human-AI
+              Collaboration</h1>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a>Xuhui Kang</a><sup>1</sup></span>,
+              <span class="author-block">
+                <a>Yan Zhuang</a><sup>1</sup></span>,
+              <span class="author-block">
+                <a>Yuyan Wang</a><sup>2</sup></span>,
+              <span class="author-block">
+                <a>Yi Ping</a><sup>1</sup></span>,
+              <span class="author-block">
+                <a href="https://yenlingkuo.com/">Yen-Ling Kuo</a><sup>1</sup></span>
+            </div>
+            <div class="is-size-5 publication-authors affil">
+              <span class="author-block"><sup>1</sup>University of Virginia</span>&nbsp;&nbsp;&nbsp;
+              <span class="author-block"><sup>2</sup>University of Pennsylvania</span>
+            </div>
+            <div class="publication-authors emails">
+              <span class="author-block">{xuhui, yyx3hd, efk4ps, ylkuo}@virginia.edu,
+                wangyy99@engineering.upenn.edu</span>
+            </div>
+
+            <div class="logos">
+              <img src="./static/images/uva_logo.png" alt="University of Virginia, Department of Computer Science" />
+              <img src="./static/images/penn_logo.png" alt="University of Pennsylvania" class="penn" />
+            </div>
+
+            <div class="column has-text-centered" style="margin-bottom: 1.2rem;">
+              <div class="publication-links">
+                <!-- Put the arXiv id in and uncomment once the preprint is posted.
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/XXXX.XXXXX" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                -->
+                <span class="link-block">
+                  <a href="https://github.com/Shua-Kang/prism_controllable_behaviors"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+
+            <figure class="fig">
+              <img src="./static/images/intro.png" alt="Overview of PRISM." />
+              <figcaption>
+                A human behavior model should be controllable, not just expressive. <b>(a)</b> Human data is
+                imbalanced, and common behaviors appear far more often than uncommon ones. <b>(b)</b> A uni-modal
+                partner model reproduces only the most common behavior. <b>(c)</b> A multi-modal partner model covers
+                more behaviors, but still samples them at the dataset frequency. <b>(d)</b> PRISM learns behavior
+                latents and controls the behavior distribution at rollout, so the AI agent meets both common and
+                uncommon behaviors.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section alt" id="abstract">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified prose">
+            <p>
+              AI agents that collaborate with humans must handle diverse human behaviors, including behaviors that
+              appear only rarely. Since training with real humans in the loop is slow and costly, agents learn instead
+              with models of human behavior trained on demonstrations. However, such partner models inherit the
+              behavior-frequency bias of the dataset, so rare but valid behaviors almost never appear. We argue that a
+              partner behavior model should be controllable, so that its behavior distribution can be chosen at rollout
+              time. We introduce <i>PRISM</i>, a controllable partner model that separates the behaviors mixed together
+              in unlabeled demonstrations. PRISM learns a behavior latent space with a contrastive variational
+              autoencoder, treating action chunks that start from similar states but move toward different goals as
+              different behaviors. It then conditions a diffusion policy, chosen for its ability to model multi-modal
+              distributions, on the learned behavior latents. At rollout, we control the behavior distribution, so the
+              AI agent learns to cooperate with common and uncommon behaviors. Experiments in Overcooked-AI and Moving
+              Out, and a human study, show that PRISM covers behaviors more evenly and improves collaboration with
+              unseen partners and real humans.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="behavior">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3 has-text-centered">What Is a Behavior?</h2>
+          <div class="columns is-centered">
+            <div class="column is-two-thirds">
+              <figure class="fig">
+                <img src="./static/images/behavior_examples.png" alt="Behavior examples in Moving Out." />
+              </figure>
+            </div>
+          </div>
+          <p class="prose" style="text-align: left;">
+            From nearly the same state (the black star), human players move toward different goals, and some of these
+            choices are far rarer than others. A behavior is therefore defined by where a short action chunk leads, not
+            by where it starts.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section alt" id="method">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3 has-text-centered">PRISM</h2>
+          <div class="prose">
+            <h3 class="title is-4 has-text-left">Learning what a behavior is</h3>
+            <p style="text-align: left; margin-bottom: 2rem;">
+              A contrastive learning VAE encodes each action chunk into a behavior latent. Beyond reconstruction, a
+              contrastive term pulls together chunks that start from a similar state and reach a similar goal, and
+              pushes apart chunks that share the state but head elsewhere. Latent distance then measures behavioral
+              difference rather than trajectory shape.
+            </p>
+
+            <h3 class="title is-4 has-text-left">Choosing which behavior to show</h3>
+            <p style="text-align: left;">
+              A diffusion policy is conditioned on this latent. At rollout, we retrieve the behaviors that humans
+              actually performed near the current state, and among them we pick the one most unlike everything played
+              so far. Rare behaviors are reached quickly, instead of appearing at their data frequency.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="latents">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3 has-text-centered">Do the Latents Separate Behaviors?</h2>
+          <div class="columns is-centered">
+            <div class="column is-half">
+              <figure class="fig">
+                <img src="./static/images/latent_cl.png" alt="Latent neighborhoods." />
+              </figure>
+            </div>
+          </div>
+          <p class="prose" style="text-align: left;">
+            Each panel encodes one anchor state (black star) and draws the action chunks whose latents are closest to
+            it. <b>(a)</b> With the contrastive term, latent neighbors share both a similar state and a similar
+            behavior, so one neighborhood is one behavior. <b>(b)</b> Without it, chunks heading in different
+            directions from the same state fall into the same neighborhood, and conditioning on such a latent no longer
+            selects a single behavior.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section alt" id="results">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3 has-text-centered">Collaboration with Held-Out Partners</h2>
+          <figure class="fig">
+            <img src="./static/images/results_ai_ai.png" alt="Collaboration results." />
+          </figure>
+          <p class="prose" style="text-align: left; margin-top: 1.5rem;">
+            We split the human demonstrations into two halves. The agent trains with a partner model built on one half,
+            which shows the common behaviors, and is evaluated with a held-out proxy built on the other half, which
+            shows uncommon behaviors it never saw. With common behaviors, PRISM is best or tied on most maps. With
+            uncommon behaviors the gap becomes large, and PRISM roughly doubles the best baseline on the two hardest
+            Overcooked-AI layouts and on two of the three Moving Out maps.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" id="videos">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full">
+          <h2 class="title is-3 has-text-centered">Rollout Videos</h2>
+
+          <h3 class="title is-4 has-text-left">Overcooked-AI</h3>
+          <p class="lead" style="text-align: left; margin-bottom: 1.5rem;">
+            Asymmetric Advantages. Each row is one trained AI agent, and each column is one partner it plays with. In
+            the two human-proxy columns, the <b style="color: #2e7d32;">green chef</b> is the human proxy and the
+            <b style="color: #1565c0;">blue chef</b> is the trained AI agent. The number under each video is that
+            episode's return.
+          </p>
+
+          <div class="vgrid-scroll">
+            <div class="vgrid"
+              style="grid-template-columns: 9rem repeat(3, minmax(150px, 1fr)); justify-content: center; min-width: 700px;">
+
+              <div></div>
+              <div class="head">Play with itself</div>
+              <div class="head">Play with human proxy<span>(common)</span></div>
+              <div class="head">Play with human proxy<span>(uncommon)</span></div>
+
+              <div class="row-label">CoMeDi</div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/overcooked/03_reward440_blue-CoMeDi_green-CoMeDi.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">reward 440</p>
+              </div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/overcooked/04_reward180_blue-CoMeDi_green-human-common.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">reward 180</p>
+              </div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/overcooked/02_reward120_blue-CoMeDi_green-human-uncommon.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">reward 120</p>
+              </div>
+
+              <div class="row-label">GAMMA</div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/overcooked/03_reward260_blue-GAMMA_H_green-GAMMA_H.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">reward 260</p>
+              </div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/overcooked/03_reward100_blue-GAMMA_green-human-common.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">reward 100</p>
+              </div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/overcooked/02_reward80_blue-GAMMA_green-human-uncommon.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">reward 80</p>
+              </div>
+
+              <div class="row-label ours">PRISM (Ours)</div>
+              <div class="vcell ours">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/overcooked/03_reward280_blue-PRISM_green-PRISM.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">reward 280</p>
+              </div>
+              <div class="vcell ours">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/overcooked/02_reward280_blue-PRISM_green-human-common.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">reward 280</p>
+              </div>
+              <div class="vcell ours">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/overcooked/04_reward220_blue-PRISM_green-human-uncommon.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">reward 220</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="prose" style="text-align: left; margin-top: 1.5rem; margin-bottom: 3.5rem;">
+            Playing with itself only measures whether an agent can run the task with a copy of its own conventions, and
+            the baselines score well there. What matters is the two human-proxy columns, where PRISM keeps its score
+            while the baselines drop.
+          </p>
+
+          <h3 class="title is-4 has-text-left">Moving Out</h3>
+          <p class="lead" style="text-align: left; margin-bottom: 2rem;">
+            Two agents carry objects into the blue goal region. The <b style="color: #1565c0;">blue agent</b> is the
+            trained AI agent and the <b style="color: #d81b60;">pink agent</b> is its partner. The number under each
+            video is the delivery score of that episode, the fraction of the objects brought into the region.
+          </p>
+
+          <h4 class="title is-5 has-text-left">Four Corners</h4>
+          <div class="vgrid-scroll">
+            <div class="vgrid"
+              style="grid-template-columns: 9rem repeat(3, minmax(140px, 220px)); justify-content: center; min-width: 640px;">
+
+              <div></div>
+              <div class="head">Play with itself</div>
+              <div class="head">Play with human proxy<span>(common)</span></div>
+              <div class="head">Play with human proxy<span>(uncommon)</span></div>
+
+              <div class="row-label">GAMMA</div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/four_corners/07_score0.75_blue-GAMMA_red-GAMMA.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 0.75</p>
+              </div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/four_corners/00_score0.25_blue-GAMMA_red-common_s1.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 0.25</p>
+              </div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/four_corners/00_score0.00_blue-GAMMA_red-uncommon_s2.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 0.00</p>
+              </div>
+
+              <div class="row-label ours">PRISM (Ours)</div>
+              <div class="vcell ours">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/four_corners/05_score0.50_blue-prism_prism.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 0.50</p>
+              </div>
+              <div class="vcell ours">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/four_corners/05_score0.50_blue-prism_common.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 0.50</p>
+              </div>
+              <div class="vcell ours">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/four_corners/06_score0.25_blue-prism_uncommon.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 0.25</p>
+              </div>
+            </div>
+          </div>
+
+          <h4 class="title is-5 has-text-left" style="margin-top: 2.5rem;">Sequential Rotations</h4>
+          <div class="vgrid-scroll">
+            <div class="vgrid"
+              style="grid-template-columns: 9rem repeat(3, minmax(140px, 220px)); justify-content: center; min-width: 640px;">
+
+              <div></div>
+              <div class="head">Play with itself</div>
+              <div class="head">Play with human proxy<span>(common)</span></div>
+              <div class="head">Play with human proxy<span>(uncommon)</span></div>
+
+              <div class="row-label">GAMMA</div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/sequential_rotations/06_score1.00_blue-GAMMA_red-GAMMA.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 1.00</p>
+              </div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/sequential_rotations/00_score0.00_blue-gamma_red-common.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 0.00</p>
+              </div>
+              <div class="vcell">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/sequential_rotations/00_score0.00_blue-gamma_red-uncommon.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 0.00</p>
+              </div>
+
+              <div class="row-label ours">PRISM (Ours)</div>
+              <div class="vcell ours">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/sequential_rotations/02_score1.00_blue-prism_red-prism.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 1.00</p>
+              </div>
+              <div class="vcell ours">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/sequential_rotations/01_score1.00_blue-prism_red-common.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 1.00</p>
+              </div>
+              <div class="vcell ours">
+                <video autoplay loop muted playsinline preload="auto">
+                  <source src="./static/videos/movingout/sequential_rotations/00_score1.00_blue-prism_red-uncommon.mp4"
+                    type="video/mp4">
+                </video>
+                <p class="score">score 1.00</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="prose" style="text-align: left; margin-top: 1.5rem;">
+            Playing with itself, GAMMA scores at least as well as PRISM. With the proxies the ordering flips. PRISM
+            delivers more on both maps, and on Sequential Rotations it delivers everything with both proxies while
+            GAMMA delivers nothing.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section alt" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title is-3 has-text-centered">BibTeX</h2>
+      <!-- TODO: fill in the arXiv eprint id once the preprint is posted. -->
+      <pre><code>@article{kang2026prism,
+  title={Learning Controllable Human Behavior Models for Human-AI Collaboration},
+  author={Kang, Xuhui and Zhuang, Yan and Wang, Yuyan and Ping, Yi and Kuo, Yen-Ling},
+  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  year={2026}
+}</code></pre>
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content has-text-centered">
+            <p>
+              This template was borrowed from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+              Thanks for their work!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>

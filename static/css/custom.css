@@ -1,0 +1,291 @@
+/* Styling layered on top of the Nerfies/Bulma template.
+   Everything project-specific lives here so the template files stay untouched. */
+
+:root {
+  --ink: #1b1f24;
+  --muted: #5f6b7a;
+  --accent: #1f3a68;
+  --accent-dark: #16294a;
+  --accent-soft: #eef2f8;
+  --line: #e5e9f0;
+  --bg-alt: #f7f8fa;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--ink);
+  font-size: 17px;
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  background: linear-gradient(180deg, #f6f8fb 0%, #ffffff 100%);
+}
+
+.hero .hero-body {
+  padding-top: 3rem;
+}
+
+.publication-title {
+  line-height: 1.16;
+  letter-spacing: -0.015em;
+}
+
+.publication-authors {
+  margin-top: 0.5rem;
+}
+
+.publication-authors a {
+  color: var(--accent) !important;
+}
+
+.affil {
+  color: var(--muted);
+}
+
+.emails {
+  color: var(--muted);
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  margin: 1.4rem 0 0.3rem;
+}
+
+/* The UVA logo is a JPEG with a baked-in white background, so it would sit in a
+   white box on the tinted hero. Multiply drops that white into the backdrop and
+   leaves the transparent Penn PNG untouched. */
+.logos img {
+  height: 58px;
+  mix-blend-mode: multiply;
+}
+
+/* The Penn mark is drawn heavier than the UVA one, so matching their ink
+   heights makes Penn look larger. Three quarters reads as equal. */
+.logos img.penn {
+  height: 43.5px;
+}
+
+/* ---------- link buttons ---------- */
+
+.publication-links .button.is-dark {
+  background: var(--accent);
+  border-color: transparent;
+  font-weight: 500;
+  transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.publication-links .button.is-dark:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(31, 58, 104, 0.22);
+}
+
+/* ---------- sections ---------- */
+
+section.alt {
+  background: var(--bg-alt);
+}
+
+.section .title.is-3 {
+  position: relative;
+  padding-bottom: 0.7rem;
+  margin-bottom: 1.7rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.section .title.is-3::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 54px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.section .title.is-4 {
+  border-left: 4px solid var(--accent);
+  padding-left: 0.65rem;
+  margin-bottom: 0.9rem;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+/* Map name above a video grid. */
+.section .title.is-5 {
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.7rem;
+}
+
+/* Keep the line length readable even under a full-width figure. */
+.prose {
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lead {
+  color: var(--muted);
+}
+
+/* ---------- figures ---------- */
+
+figure.fig {
+  margin: 0;
+}
+
+figure.fig img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 10px 26px rgba(16, 24, 40, 0.06);
+}
+
+figure.fig figcaption {
+  max-width: 780px;
+  margin: 1rem auto 0;
+  text-align: left;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+figure.fig figcaption b {
+  color: var(--ink);
+}
+
+/* ---------- video grids ---------- */
+
+.vgrid-scroll {
+  overflow-x: auto;
+  padding-bottom: 0.3rem;
+}
+
+.vgrid {
+  display: grid;
+  gap: 0.55rem 0.8rem;
+  align-items: center;
+}
+
+/* Column heads carry the partner, row labels carry the method. */
+.vgrid .head {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.vgrid .head span {
+  display: block;
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.vgrid .row-label {
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.vgrid .row-label.ours {
+  color: var(--accent);
+}
+
+.vcell {
+  border-radius: 10px;
+  padding: 0.4rem;
+}
+
+.vcell.ours {
+  background: var(--accent-soft);
+}
+
+.vcell video {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.vcell .score {
+  margin-top: 0.35rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.vcell.ours .score {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- bibtex ---------- */
+
+#BibTeX pre {
+  background: #0f172a;
+  border-radius: 10px;
+  padding: 1.1rem 1.2rem;
+  overflow-x: auto;
+}
+
+#BibTeX pre code {
+  background: transparent;
+  color: #e2e8f0;
+  padding: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.footer a {
+  color: var(--accent);
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  .logos {
+    gap: 1.5rem;
+  }
+
+  .logos img {
+    height: 44px;
+  }
+
+  .logos img.penn {
+    height: 33px;
+  }
+}
